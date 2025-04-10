@@ -100,6 +100,38 @@ const searchTemplates = async (req, res) => {
     }
 };
 
+// Lista de tipos permitidos (todos en minúsculas)
+const ALLOWED_TYPES = ['seguimiento', 'bienvenida', 'soporte', 'marketing'];
+
+// Filtrar plantillas por tipo
+const filterTemplatesByType = async (req, res) => {
+    try {
+        const { type } = req.query;
+
+        // Validar que se proporcione un tipo
+        if (!type) {
+            return res.status(400).send('Type parameter is required');
+        }
+
+        const lowerType = type.toLowerCase();
+
+        // Validar que el tipo sea permitido
+        if (!ALLOWED_TYPES.includes(lowerType)) {
+            return res.status(400).send(`Invalid type. Allowed types are: ${ALLOWED_TYPES.join(', ')}`);
+        }
+
+        // Buscar plantillas por tipo usando regex para hacer case-insensitive
+        const templates = await Template.find({
+            type: { $regex: new RegExp(`^${lowerType}$`, 'i') }
+        });
+
+        res.status(200).json(templates);
+    } catch (err) {
+        console.error('Error filtering templates:', err);
+        res.status(500).send('Error filtering templates');
+    }
+};
+
 // Exportar las funciones del controlador
 module.exports = {
     getAllTemplates,
@@ -107,4 +139,5 @@ module.exports = {
     updateTemplate,
     deleteTemplate,
     searchTemplates,
+    filterTemplatesByType,
 };
