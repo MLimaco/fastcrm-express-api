@@ -2,6 +2,7 @@ require('dotenv').config(); // Carga las variables de entorno desde .env
 
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');   // Importa cors para permitir solicitudes de diferentes dominios
 const templateRoutes = require('./routes/templateRoutes'); // Importa las rutas
 
 const app = express();
@@ -9,6 +10,7 @@ const port = process.env.PORT
 
 // Middleware
 app.use(express.json()); // Parsear JSON en las solicitudes
+app.use(cors()); // Habilitar CORS para todas las rutas
 
 app.get('/', (req, res) => {
     main().catch(err => console.log(err));
