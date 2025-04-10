@@ -4,11 +4,13 @@ const {
     createTemplate,
     updateTemplate,
     deleteTemplate,
+    searchTemplates,
 } = require('../controllers/templateController');
 
 const router = express.Router();
 
 // Rutas para las plantillas
+router.get('/search', searchTemplates); // Buscar plantillas por palabra clave
 router.get('/', getAllTemplates); // Obtener todas las plantillas
 router.post('/', createTemplate); // Crear una nueva plantilla
 router.put('/:id', updateTemplate); // Actualizar una plantilla por ID

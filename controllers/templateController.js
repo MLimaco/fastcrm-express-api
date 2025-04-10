@@ -76,10 +76,35 @@ const deleteTemplate = async (req, res) => {
     }
 };
 
+// Buscar plantillas por palabra clave
+const searchTemplates = async (req, res) => {
+    try {
+        const { q } = req.query;
+
+        if (!q) {
+            return res.status(400).send('Search query is required');
+        }
+
+        // Buscar en los campos content y name usando $regex
+        const templates = await Template.find({
+            $or: [
+                { content: { $regex: q, $options: 'i' } },
+                { name: { $regex: q, $options: 'i' } }
+            ]
+        });
+
+        res.status(200).json(templates);
+    } catch (err) {
+        console.error('Error searching templates:', err);
+        res.status(500).send('Error searching templates');
+    }
+};
+
 // Exportar las funciones del controlador
 module.exports = {
     getAllTemplates,
     createTemplate,
     updateTemplate,
     deleteTemplate,
+    searchTemplates,
 };
